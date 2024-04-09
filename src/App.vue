@@ -12,6 +12,7 @@ onMounted(async () => {
 
 <template>
   <div class="p-8 bg-gray-100 min-h-screen">
+    <h1 class="text-center uppercase text-indigo-500 text-2xl">Filter Data Table</h1>
     <DataTable :items="items"/>
   </div>
 </template>
