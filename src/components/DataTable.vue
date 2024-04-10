@@ -2,20 +2,31 @@
 import FilterDropdown from './FilterDropdown.vue';
 import FilterRadios from './FilterRadios.vue';
 import SearchForm from './SearchForm.vue';
+import {computed, ref} from 'vue'
+const searchFilter = ref('')
+const props = defineProps({
+  items: {
+    type: Array,
+    required: true,
+  }
+})
 
-  defineProps({
-    items: {
-      type: Array,
-      required: true,
-    }
-  })
+const filteredItems = computed(() => {
+  if (searchFilter.value !== '')
+    return props.items.filter(item => item.title.toLowerCase().includes(searchFilter.value) || item.description.toLowerCase().includes(searchFilter.value))
+  return props.items
+})
+
+const handleSearch = (search) => {
+  searchFilter.value = search
+}
 </script>
 
 <template>
   <div class="bg-white relative border rounded-lg">
     <div class="flex items-center justify-between">
       <!-- Search bar -->
-      <SearchForm />
+      <SearchForm @search="handleSearch"/>
 
       <div class="flex items-center justify-end text-sm font-semibold">
         <!-- Radio buttons -->
@@ -40,7 +51,7 @@ import SearchForm from './SearchForm.vue';
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in items" :key="item.id" class="border-b">
+        <tr v-for="item in filteredItems" :key="item.id" class="border-b">
           <td class="px-4 py-3 font-medium text-gray-900">{{ item.id }}</td>
           <td class="px-4 py-3 font-medium text-gray-900">{{ item.title }}</td>
           <td class="px-4 py-3">{{ item.description }}</td>
