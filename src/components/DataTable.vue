@@ -5,6 +5,7 @@ import SearchForm from './SearchForm.vue';
 import {computed, ref} from 'vue'
 const searchFilter = ref('')
 const radioFilter = ref('')
+const selectedFilter = ref([])
 const props = defineProps({
   items: {
     type: Array,
@@ -25,6 +26,11 @@ const filteredItems = computed(() => {
     default:
       break
   }
+
+  if (selectedFilter.value.length > 0) {
+    items = items.filter(item => selectedFilter.value.includes(item.category))
+  }
+
   if (searchFilter.value !== '')
     return items.filter(
       item =>
@@ -38,8 +44,14 @@ const handleSearch = (search) => {
 }
 
 const handleRadioFilter = (filter) => {
-  console.log('aaa', filter)
   radioFilter.value = filter
+}
+
+const handleSelectFilter = (filter) => {
+  if (selectedFilter.value.includes(filter)) {
+    return selectedFilter.value = selectedFilter.value.filter(item => item !== filter)
+  }
+    return selectedFilter.value.push(filter)
 }
 </script>
 
@@ -55,7 +67,7 @@ const handleRadioFilter = (filter) => {
 
         
         <!-- List of filters -->
-        <FilterDropdown />
+        <FilterDropdown :items="items" @filterSelectbox="handleSelectFilter"/>
       </div>
     </div>
     <table class="w-full text-sm text-left text-gray-500">
