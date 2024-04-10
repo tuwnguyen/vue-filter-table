@@ -4,6 +4,7 @@ import FilterRadios from './FilterRadios.vue';
 import SearchForm from './SearchForm.vue';
 import {computed, ref} from 'vue'
 const searchFilter = ref('')
+const radioFilter = ref('')
 const props = defineProps({
   items: {
     type: Array,
@@ -12,13 +13,33 @@ const props = defineProps({
 })
 
 const filteredItems = computed(() => {
+  let items = props.items
+  
+  switch (radioFilter.value) {
+    case 'apple':
+      items = items.filter(item => item.brand === 'Apple')
+      break
+    case 'others':
+      items = items.filter(item => item.brand !== 'Apple')
+      break
+    default:
+      break
+  }
   if (searchFilter.value !== '')
-    return props.items.filter(item => item.title.toLowerCase().includes(searchFilter.value) || item.description.toLowerCase().includes(searchFilter.value))
-  return props.items
+    return items.filter(
+      item =>
+      item.title.toLowerCase().includes(searchFilter.value) || 
+      item.description.toLowerCase().includes(searchFilter.value))
+  return items
 })
 
 const handleSearch = (search) => {
   searchFilter.value = search
+}
+
+const handleRadioFilter = (filter) => {
+  console.log('aaa', filter)
+  radioFilter.value = filter
 }
 </script>
 
@@ -30,7 +51,7 @@ const handleSearch = (search) => {
 
       <div class="flex items-center justify-end text-sm font-semibold">
         <!-- Radio buttons -->
-        <FilterRadios />
+        <FilterRadios @filter="handleRadioFilter"/>
 
         
         <!-- List of filters -->
